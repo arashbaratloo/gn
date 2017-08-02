@@ -1,0 +1,111 @@
+This question may be enhanced a little, but there's enough for you to
+get started on for now. In all cases, grading will be by in-person
+demo to GOB by the project team. Grading demos will be available
+Sunday 6th to Tuesday 8th inclusive, and slots will be arranged via
+email to GOB.
+
+Q1 In the country of GnomenWald there lie many isolated villages
+connected by roads (roads only ever go from village to village, never
+going nowhere nor branching out partway). The gnomes are very
+organised, so although they name their villages in the Gnomic
+language, all their villages have unique integer ids, starting
+incrementally from "1". In the days of the Grand Archgnome Zijphraagh,
+a complete road map was made of GnomenWald -- some of the gnomes were
+surprised to see that some villages had many roads connecting to them,
+whereas some had only two, or even only one. They also noticed that
+some of the roads were only one-way (often due to the rigours of the
+terrain, but sometimes due to political sensitivities), so the
+map-makers were very careful to label all their roads as one-way (so
+that a two-way road between two villages would be drawn as a pair of
+one-way roads in each direction).
+
+After several generations the population had increased so much that
+new villages started to spring up (though always connected via a road
+or roads to one or more villages in GnomenWald), and sometimes
+villages would disappear (though that made it very hard for the
+mapmakers since they insisted that roads only joined villages and
+never branched in the middle). Build a data structure to represent
+this road map.
+
+Test your data structure by using it in a program which tries to move
+some gnomes around the villages 'along' the roads (at this stage you
+don't need to 'show' them going along a road -- simply show the
+succession of villages a given gnome visits). You should also test
+your ability to add new villages, and you should also try to handle
+the case of deleting villages (though that's an intellectually amusing
+problem to think through).
+
+A by-product of the gnomic organisation gene is that each gnome has a
+name, a unique integer id, a favorite colour, and a formal VIP
+level. It's also a very highly regulated society, so there can often
+be demands to track down any particular gnome by id or group of gnomes
+by name, colour or VIP level, so your structure should be designed to
+facilitate this efficiently.
+
+Now write a GUI for this with the following properties. It should
+display the graph of villages and roads, and allow the construction?ab
+initio?of any reasonable number of villages plus an easy way to build
+one or two way roads between villages. It should allow adding a new
+village to an existing setup, and permit deletion of individual
+villages (on deletion of a village, two options should be provided:
+(1) any roads that went through the village should also be deleted, or
+(2) any roads that went through the village en route to other villages
+should be made direct (for example, if there is a road from A to B and
+roads from B to C and from B to D, then in case (2) there will now be
+a road from A to C and A to D). There should also be a way to place a
+gnome in a specified village, and a button provided to (1) make the
+gnome move randomly amongst adjacent villages, and (2) a way to tell
+the gnome to move to a specified adjacent village. (The user should be
+able to see in which village(s) any particular gnome or group of
+gnomes is residing.) Be aware that eventually you may well want to
+handle multiple gnomes moving in their own threads, so do think
+carefully about your data structures and how to keep your code
+modular. You should also provide the capability of searching
+(efficiently) for any given gnome and so locating their current
+position and also acquiring a history of the places they've
+visited. There should be intuitive ways to build gnomes, and to
+add/delete villages and roads. The roads (and perhaps even the
+villages) should have costs (tolls ... collected by trolls?)
+associated with them. Enhance your program by having the gnomes know
+their current location and a desired location, plus a measure of
+urgency (ranging from lazy to desperate), so will choose their routes
+to their destinations accordingly. The multiple gnomes should move
+around in their own threads, and there should be reasonable limits on
+the number of gnomes permitted to rest in any one village and on the
+number of gnomes allowed to be in any given road at any one time
+(limits should vary by village and by road). Provision should be made
+to allow appropriate preferences according to VIP level. Your program
+should be able to run a simulation of the gnomes travelling
+around.?You might like to explore ways of giving feedback to gnomes,
+either treating them as individuals or by devising a more global
+traffic control system, so that if they're not in lazy mode and so
+keen to get to their destination more quickly or more cheaply, they
+can reroute themselves to avoid being delayed when confronted with
+actual or potential traffic jams. You will find yourself implementing
+a shortest path algorithm to resolve the above, but you should also
+implement one of the following: 1. minimal spanning tree (to allow the
+Gnomenwald government to minimise their investment in their total road
+network ... before a new road is built from one village to another,
+the two villages will submit a building cost proposal to the country's
+government (you may assume that the cost of building a road will be
+100 times the toll charged for using that road), and the government
+will then pick from the list of proposals those which minimise the
+total cost of building enough roads to connect all the villages (at
+least to connect all those which could be connected if all the
+proposed roads were built -- here, connected is allowed to mean
+connected via other villages; we're not requiring direct roads between
+all villages!!!). Notice that this raises the question of how to
+handle the case of a collection of villages being created and
+submitting a road-building proposal together which connect to any of
+the old villages after a set of roads have already been
+built. Likewise, there are questions when villages or roads are
+deleted. 2. The gnomes are more than a little paranoid, so actually
+prefer to remain anonymous to each other (or at least to those gnomes
+not in their immediate family), even though their ids are known to
+?the system?. However, they do have friends (in the sense of our
+earlier homeworks) to whom they?ve revealed their identities. As an
+elven spy, you are able to get ?anonymised? snapshots of the complete
+friendship graph whenever you like, although each time it?s freshly
+anonymised. You might find it interesting to see if you can hack past
+the gnomic anonymity ? http://www2007.org/papers/paper232.pdf Add such
+additional features as you find interesting.
