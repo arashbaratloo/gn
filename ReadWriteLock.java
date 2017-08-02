@@ -1,12 +1,19 @@
 // Ideas from https://dzone.com/articles/java-concurrency-read-write-lo
-
+// Extended a typical ReadWriteLock to be able to cap the maximum number
+// of concurrent readers.
 public class ReadWriteLock {
   private int readers       = 0;
   private int writers       = 0;
   private int writeRequests = 0;
+  private int max_readers   = Integer.MAX_VALUE;
+
+  ReadWriteLock() {}
+  ReadWriteLock(int max_readers) {
+    this.max_readers = max_readers;
+  }
 
   public synchronized void lockRead() throws InterruptedException{
-    while(writers > 0 || writeRequests > 0) {
+    while (writers > 0 || writeRequests > 0 || readers >= max_readers-1) {
       wait();
     }
     readers++;
@@ -19,8 +26,7 @@ public class ReadWriteLock {
 
   public synchronized void lockWrite() throws InterruptedException {
     writeRequests++;
-
-    while(readers > 0 || writers > 0){
+    while (readers > 0 || writers > 0) {
       wait();
     }
     writeRequests--;
