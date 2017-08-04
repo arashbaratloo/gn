@@ -6,25 +6,6 @@ import static org.junit.Assert.*;
 // java org.junit.runner.JUnitCore BST
 
 public class BST<T> {
-  // TreeNode defines a data structure internal to BST that contains
-  // a tree node. It works for any type T as long as toString() is
-  // defined for it.
-  private class TreeNode<T> {
-    private int id;
-    private T data;
-    private TreeNode<T> leftchild;
-    private TreeNode<T> rightchild;
-    private int height;
-
-    public TreeNode(int id, T data) {
-      this.id = id;
-      this.data = data;
-      this.leftchild = null;
-      this.rightchild = null;
-      this.height = 0;
-    }
-  } // end class TreeNode
-
   private TreeNode<T> root;
 
   public BST() {
@@ -36,9 +17,8 @@ public class BST<T> {
   }
 
   private String toString(TreeNode<T> node) {
-    if (node == null) {
-      return "[]";
-    }
+    if (node == null)
+      return "";
     String out = "[";
     out += toString(node.leftchild);
     out += node.id;
@@ -205,6 +185,26 @@ public class BST<T> {
              verifyBalancedBST(root.rightchild, root.id, max);
   }
 
+  // TreeNode defines a data structure internal to BST that contains
+  // some data, a unique id, and children pointers.  Data is generic
+  // so it can easily be extended to hold anything; the id is
+  // an integer and is assumed to be unique.
+  private class TreeNode<T> {
+    private int id;
+    private T data;
+    private TreeNode<T> leftchild;
+    private TreeNode<T> rightchild;
+    private int height;
+
+    public TreeNode(int id, T data) {
+      this.id = id;
+      this.data = data;
+      this.leftchild = null;
+      this.rightchild = null;
+      this.height = 0;
+    }
+  } // end class TreeNode
+
   private static void log(Object obj) {
     System.out.println(String.valueOf(obj));
   }
@@ -216,19 +216,19 @@ public class BST<T> {
     }
     BST<Stuff> tree = new BST<Stuff>();
     assertEquals(0, tree.size());
-    assertTrue("0:[]".equals(tree.toString()));
+    assertTrue("0:".equals(tree.toString()));
     tree.add(20, new Stuff(20));
     assertEquals(1, tree.size());
-    assertTrue("1:[[]20[]]".equals(tree.toString()));
+    assertTrue("1:[20]".equals(tree.toString()));
     tree.add(18, new Stuff(18));
     tree.add(12, new Stuff(12));
     tree.add(19, new Stuff(19));
     assertEquals(4, tree.size());
     assertTrue(tree.verifyBalancedBST());
-    assertTrue("4:[[[]12[]]18[[[]19[]]20[]]]".equals(tree.toString()));
+    assertTrue("4:[[12]18[[19]20]]".equals(tree.toString()));
     tree.add(30, new Stuff(30));
     tree.add(40, new Stuff(40));
-    assertTrue("6:[[[[]12[]]18[[]19[]]]20[[]30[[]40[]]]]".equals(tree.toString()));
+    assertTrue("6:[[[12]18[19]]20[30[40]]]".equals(tree.toString()));
     assertTrue(tree.verifyBalancedBST());
     // find()
     log("BEFORE FIND TESTS " + tree.toString());
@@ -241,11 +241,11 @@ public class BST<T> {
     // remove()
     log("BEFORE REMOVE TESTS " + tree.toString());
     tree.remove(20);
-    assertTrue("5:[[[[]12[]]18[[]19[]]]30[[]40[]]]".equals(tree.toString()));
+    assertTrue("5:[[[12]18[19]]30[40]]".equals(tree.toString()));
     tree.remove(200);
-    assertTrue("5:[[[[]12[]]18[[]19[]]]30[[]40[]]]".equals(tree.toString()));
+    assertTrue("5:[[[12]18[19]]30[40]]".equals(tree.toString()));
     tree.remove(12);
-    assertTrue("4:[[[]18[[]19[]]]30[[]40[]]]".equals(tree.toString()));
+    assertTrue("4:[[18[19]]30[40]]".equals(tree.toString()));
     log("AFTER REMOVE TESTS " + tree.toString());
     // Check integrity of the BST
     assertTrue(tree.verifyBalancedBST());
