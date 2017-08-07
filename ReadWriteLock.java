@@ -1,40 +1,88 @@
-// Ideas from https://dzone.com/articles/java-concurrency-read-write-lo
-// Extended a typical ReadWriteLock to be able to cap the maximum number
-// of concurrent readers.
+import java.lang.*;
+import java.util.concurrent.*;
+
 public class ReadWriteLock {
-  private int readers       = 0;
-  private int writers       = 0;
-  private int writeRequests = 0;
-  private int max_readers   = Integer.MAX_VALUE;
+	private int readers = 0;
+	private int writers = 0;
+	private int writeRequests = 0;
+	private int max_readers = Integer.MAX_VALUE;
 
-  ReadWriteLock() {}
-  ReadWriteLock(int max_readers) {
-    this.max_readers = max_readers;
+	public ReadWriteLock() {
+	}
+
+	public ReadWriteLock(int max_readers) {
+		this.max_readers = max_readers;
+	}
+
+	public synchronized void lockRead() throws InterruptedException {
+		while (writers > 0 || writeRequests > 0 || readers >= max_readers) {
+			log(myName() + " waiting...");
+			wait();
+		}
+		readers++;
+		log(myName() + " got read lock (" + readers + ")");
+	}
+	public synchronized void VIPlockRead() throws InterruptedException{
+		// TODO implement this.
+		readers++;
+	}
+
+	public synchronized void unlockRead() {
+		readers--;
+		log(myName() + " release read lock (" + readers + ")");
+		notifyAll();
+	}
+
+	public synchronized void lockWrite() throws InterruptedException {
+		writeRequests++;
+		while (readers > 0 || writers > 0) {
+			wait();
+		}
+		writeRequests--;
+		writers++;
+	}
+
+	public synchronized void unlockWrite() throws InterruptedException {
+		writers--;
+		notifyAll();
+	}
+
+	private String myName() {
+		return Thread.currentThread().getName();
+	}
+
+	private static void log(Object obj) {
+    System.out.println(String.valueOf(obj));
   }
 
-  public synchronized void lockRead() throws InterruptedException{
-    while (writers > 0 || writeRequests > 0 || readers >= max_readers-1) {
-      wait();
-    }
-    readers++;
-  }
+	public static void main(String[] args) {
+		ReadWriteLock lock = new ReadWriteLock(3);
 
-  public synchronized void unlockRead() {
-    readers--;
-    notifyAll();
-  }
+		Runnable runnable = () -> {
+    	try {
+        String name = Thread.currentThread().getName();
+        System.out.println("Created " + name);
+				for (int i = 0; i < 10; i++) {
+					lock.lockRead();
+					log(name + " started reading");
+					TimeUnit.SECONDS.sleep(1);
+					lock.unlockRead();
+					log(name + " finished reading");
+				}
+    	} catch (InterruptedException e) {
+        e.printStackTrace();
+    	}
+		};
 
-  public synchronized void lockWrite() throws InterruptedException {
-    writeRequests++;
-    while (readers > 0 || writers > 0) {
-      wait();
-    }
-    writeRequests--;
-    writers++;
-  }
-
-  public synchronized void unlockWrite() throws InterruptedException {
-    writers--;
-    notifyAll();
-  }
-} // end class ReadWriteLock
+		Thread t[] = new Thread[10];
+		for (int i = 0; i < 10; i++) {
+			t[i] = new Thread(runnable);
+			t[i].start();
+		}
+		for (int i = 0; i< 10; i++) {
+			try {
+				t[i].join();
+			} catch (InterruptedException e) {}
+		}
+	}
+}
